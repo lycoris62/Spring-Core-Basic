@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderServiceImpl implements OrderService{
 
-    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository; // final 로 생성자에서만 초기화 하여 불변, 누락을 막음.
     private final DiscountPolicy discountPolicy;
 
 //    // 외부에서 변경 불가능해서 테스트하기 힘듦, DI 프레임워크 없으면 아무것도 못함
