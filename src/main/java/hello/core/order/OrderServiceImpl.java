@@ -12,11 +12,22 @@ public class OrderServiceImpl implements OrderService{
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
-    @Autowired
+//    // 외부에서 변경 불가능해서 테스트하기 힘듦, DI 프레임워크 없으면 아무것도 못함
+//    @Autowired private MemberRepository memberRepository;
+//    @Autowired private DiscountPolicy discountPolicy;
+
+    @Autowired // 생성자가 1개 있다면 @Autowired 생략해도 자동 주입됨.
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        System.out.println("memberRepository = " + memberRepository);
+        System.out.println("discountPolicy = " + discountPolicy);
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }
+
+//    @Autowired // final 없애고 수정자(setter)로 바꿀 수 있음.
+//    public void setMemberRepository(MemberRepository memberRepository) {
+//        this.memberRepository = memberRepository;
+//    }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
