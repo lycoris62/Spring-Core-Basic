@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Provider;
 
 public class SingletonWithPrototypeTest1 {
 
@@ -27,30 +28,51 @@ public class SingletonWithPrototypeTest1 {
     
     @Test
     void singletonClientUsePrototype() {
-        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(PrototypeBean.class, ClientBean.class);
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(ClientBean.class, PrototypeBean.class);
 
         ClientBean clientBean1 = ac.getBean(ClientBean.class);
         int count1 = clientBean1.logic();
         Assertions.assertThat(count1).isEqualTo(1);
 
-        ClientBean clientBean2 = ac.getBean(ClientBean.class);
-        int count2 = clientBean2.logic();
-        Assertions.assertThat(count2).isEqualTo(1);
+//        ClientBean clientBean2 = ac.getBean(ClientBean.class);
+//        int count2 = clientBean2.logic();
+//        Assertions.assertThat(count2).isEqualTo(1);
+
+
+//        ClientBean2 clientBean21 = ac.getBean(ClientBean2.class);
+//        int count21 = clientBean21.logic();
+//        Assertions.assertThat(count21).isEqualTo(1);
+//
+//        ClientBean2 clientBean22 = ac.getBean(ClientBean2.class);
+//        int count22 = clientBean22.logic();
+//        Assertions.assertThat(count22).isEqualTo(1);
     }
     
     @Scope("singleton")
     static class ClientBean {
-        private final PrototypeBean prototypeBean; // 생성 시점에 주입.
-
-//        @Autowired ApplicationContext applicationContext;
+//        private final PrototypeBean prototypeBean; // 생성 시점에 주입.
 
         @Autowired
-        public ClientBean(PrototypeBean prototypeBean) {
-            this.prototypeBean = prototypeBean;
-        }
+        private Provider<PrototypeBean> provider;
+
+//        @Autowired
+//        public ClientBean(PrototypeBean prototypeBean) {
+//            this.prototypeBean = prototypeBean;
+//        }
         
         public int logic() {
-//            PrototypeBean prototypeBean = applicationContext.getBean(PrototypeBean.class);
+            PrototypeBean prototypeBean = provider.get();
+            prototypeBean.addCount();
+            return prototypeBean.getCount();
+        }
+    }
+
+    @Scope("singleton")
+    static class ClientBean2 {
+        @Autowired ApplicationContext applicationContext;
+
+        public int logic() {
+            PrototypeBean prototypeBean = applicationContext.getBean(PrototypeBean.class);
             prototypeBean.addCount();
             return prototypeBean.getCount();
         }
